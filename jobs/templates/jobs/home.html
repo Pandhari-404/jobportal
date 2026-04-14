@@ -1,0 +1,198 @@
+{% extends "jobs/base.html" %}
+{% load static %}
+
+{% block title %}JobSpark – Find Your Next Opportunity{% endblock %}
+
+{% block content %}
+
+{# ══════════════════════════════════════════════════════════ #}
+{#   HERO SECTION                                             #}
+{# ══════════════════════════════════════════════════════════ #}
+<section class="hero-section">
+  <div class="container position-relative">
+    <div class="row justify-content-center text-center mb-4">
+      <div class="col-lg-8 fade-up">
+        <p class="text-primary fw-semibold small mb-2 text-uppercase" style="letter-spacing:1px">
+          🔥 Thousands of opportunities
+        </p>
+        <h1 class="hero-title mb-3">
+          Find Your <span class="highlight">Dream Job</span><br>with JobSpark
+        </h1>
+        <p class="text-muted lead mb-4 fade-up fade-up-delay-1">
+          Connect with top companies. Browse roles across tech, design, data, and more.
+        </p>
+      </div>
+    </div>
+
+    {# ── Search Bar ─────────────────────────────────────── #}
+    <div class="row justify-content-center fade-up fade-up-delay-2">
+      <div class="col-lg-8">
+        <form id="searchForm" method="GET" action="{% url 'home' %}">
+          <div class="hero-search-bar">
+            <i class="bi bi-search text-muted"></i>
+            {{ form.q }}
+            <div class="divider d-none d-md-block"></div>
+            <i class="bi bi-geo-alt text-muted d-none d-md-block"></i>
+            {{ form.location }}
+            <button type="submit" class="btn btn-primary">Search Jobs</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    {# ── Quick-search Tags ───────────────────────────────── #}
+    <div class="row justify-content-center mt-3 fade-up fade-up-delay-3">
+      <div class="col-auto">
+        <span class="text-muted small">Popular: </span>
+        <a href="?q=Frontend+Developer"
+           class="badge bg-white text-primary border me-1 text-decoration-none">
+          Frontend Developer
+        </a>
+        <a href="?q=Product+Manager"
+           class="badge bg-white text-primary border me-1 text-decoration-none">
+          Product Manager
+        </a>
+        <a href="?location=Remote"
+           class="badge bg-white text-primary border text-decoration-none">
+          Remote
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{# ══════════════════════════════════════════════════════════ #}
+{#   JOB LISTINGS + FILTERS                                   #}
+{# ══════════════════════════════════════════════════════════ #}
+<div class="container py-5">
+  <div class="row g-4">
+
+    {# ── Sidebar Filters ──────────────────────────────────── #}
+    <div class="col-lg-3">
+      <form id="filterForm" method="GET" action="{% url 'home' %}">
+        {# Keep existing search query when only type/category changes #}
+        {% if request.GET.q %}
+          <input type="hidden" name="q" value="{{ request.GET.q }}">
+        {% endif %}
+        {% if request.GET.location %}
+          <input type="hidden" name="location" value="{{ request.GET.location }}">
+        {% endif %}
+
+        <div class="filter-bar sticky-top" style="top:82px">
+          <h6 class="fw-bold mb-3">
+            <i class="bi bi-sliders me-2 text-primary"></i>Filters
+          </h6>
+          <div class="mb-3">
+            <label class="form-label">Job Type</label>
+            {{ form.job_type }}
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Category</label>
+            {{ form.category }}
+          </div>
+          <button type="submit" class="btn btn-primary btn-sm w-100 mb-2">
+            <i class="bi bi-funnel me-1"></i>Apply Filters
+          </button>
+          <a href="{% url 'home' %}" class="btn btn-outline-secondary btn-sm w-100">
+            <i class="bi bi-x-circle me-1"></i>Clear All
+          </a>
+        </div>
+      </form>
+    </div>
+
+    {# ── Job Cards ────────────────────────────────────────── #}
+    <div class="col-lg-9">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="section-title mb-0">Latest Jobs</h5>
+        <span class="text-muted small">
+          {{ job_count }} job{{ job_count|pluralize }} found
+        </span>
+      </div>
+
+      {% if jobs %}
+        <div class="row row-cols-1 row-cols-md-2 g-3">
+          {% for job in jobs %}
+          <div class="col" id="job-card-{{ job.pk }}">
+            <div class="job-card card h-100 border-0 shadow-sm">
+              <div class="card-body p-4">
+                {# Logo + Save button #}
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                  <div class="company-logo">{{ job.get_logo }}</div>
+                  {% if user.is_authenticated %}
+                  <button class="btn btn-sm btn-icon save-job-btn {% if job.pk in saved_ids %}saved{% endif %}"
+                          data-url="{% url 'toggle_save' job.pk %}"
+                          title="Save job">
+                    <i class="bi {% if job.pk in saved_ids %}bi-bookmark-fill{% else %}bi-bookmark{% endif %}"></i>
+                  </button>
+                  {# Hidden CSRF for AJAX #}
+                  <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}" style="display:none">
+                  {% else %}
+                  <a href="{% url 'login' %}" class="btn btn-sm btn-icon" title="Login to save">
+                    <i class="bi bi-bookmark"></i>
+                  </a>
+                  {% endif %}
+                </div>
+
+                <h6 class="job-title fw-bold mb-1">{{ job.title }}</h6>
+                <p class="company-name text-muted small mb-2">{{ job.company }}</p>
+
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                  <span class="badge {{ job.get_type_badge_class }}">{{ job.job_type }}</span>
+                  <span class="badge badge-location">
+                    <i class="bi bi-geo-alt me-1"></i>{{ job.location }}
+                  </span>
+                </div>
+
+                <p class="salary fw-semibold mb-3">{{ job.salary }}</p>
+
+                <div class="d-flex gap-2">
+                  <a href="{% url 'job_detail' job.pk %}"
+                     class="btn btn-outline-primary btn-sm flex-grow-1">
+                    View Details
+                  </a>
+                  {% if job.pk in applied_ids %}
+                    <button class="btn btn-success btn-sm" disabled>
+                      <i class="bi bi-check2"></i> Applied
+                    </button>
+                  {% else %}
+                    <a href="{% url 'job_detail' job.pk %}#apply"
+                       class="btn btn-primary btn-sm">Apply</a>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="card-footer bg-transparent border-0 px-4 pb-3">
+                <small class="text-muted">
+                  <i class="bi bi-clock me-1"></i>Posted {{ job.posted_at|date:"j M Y" }}
+                </small>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+
+      {% else %}
+        {# Empty state #}
+        <div class="text-center py-5">
+          <i class="bi bi-search display-3 text-muted"></i>
+          <p class="mt-3 text-muted">No jobs found matching your criteria.</p>
+          <a href="{% url 'home' %}" class="btn btn-outline-primary mt-2">
+            Clear Filters
+          </a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Auto-submit filter form when dropdowns change
+document.getElementById('filterForm')?.querySelectorAll('select').forEach(function(sel) {
+  sel.addEventListener('change', function() {
+    document.getElementById('filterForm').submit();
+  });
+});
+</script>
+{% endblock %}

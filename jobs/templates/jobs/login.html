@@ -1,0 +1,92 @@
+{% extends "jobs/base.html" %}
+{% load static %}
+
+{% block title %}Login – JobSpark{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+  <div class="auth-card fade-up">
+    <div class="auth-logo"><i class="bi bi-lightning-fill"></i></div>
+    <h4 class="text-center fw-bold mb-1">Welcome back</h4>
+    <p class="text-center text-muted small mb-4">Sign in to your JobSpark account</p>
+
+    {# Django form errors #}
+    {% for message in messages %}
+      {% if message.tags == 'danger' or message.tags == 'error' %}
+      <div class="alert alert-danger py-2 mb-3">
+        <i class="bi bi-exclamation-circle me-2"></i>{{ message }}
+      </div>
+      {% endif %}
+    {% endfor %}
+
+    <form method="POST" action="{% url 'login' %}{% if request.GET.next %}?next={{ request.GET.next }}{% endif %}">
+      {% csrf_token %}
+
+      <div class="mb-3">
+        <label class="form-label">Email Address</label>
+        <div class="input-group">
+          <span class="input-group-text bg-transparent border-end-0">
+            <i class="bi bi-envelope text-muted"></i>
+          </span>
+          <input type="email" name="email" class="form-control border-start-0"
+                 placeholder="you@example.com" required
+                 value="{{ request.POST.email|default:'' }}"/>
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label">Password</label>
+        <div class="input-group">
+          <span class="input-group-text bg-transparent border-end-0">
+            <i class="bi bi-lock text-muted"></i>
+          </span>
+          <input type="password" name="password" id="loginPassword"
+                 class="form-control border-start-0"
+                 placeholder="••••••••" required/>
+          <button type="button" class="btn btn-outline-secondary border-start-0"
+                  onclick="togglePass('loginPassword', this)">
+            <i class="bi bi-eye"></i>
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold">
+        <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
+      </button>
+    </form>
+
+    <hr class="my-3"/>
+
+    {# Demo account quick-fill #}
+    <div class="rounded-3 p-3 mb-3" style="background:var(--surface-alt);border:1px solid var(--border)">
+      <p class="text-muted small fw-semibold mb-2">
+        <i class="bi bi-info-circle me-1"></i>Demo Accounts
+      </p>
+      <div class="d-flex gap-2 flex-wrap">
+        <button class="btn btn-sm btn-outline-primary"
+                onclick="fillDemo('seeker@demo.com','password123')">
+          <i class="bi bi-person me-1"></i>Job Seeker
+        </button>
+        <button class="btn btn-sm btn-outline-success"
+                onclick="fillDemo('recruiter@demo.com','password123')">
+          <i class="bi bi-building me-1"></i>Recruiter
+        </button>
+      </div>
+    </div>
+
+    <p class="text-center text-muted small mb-0">
+      Don't have an account?
+      <a href="{% url 'register' %}" class="fw-semibold">Create one →</a>
+    </p>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function fillDemo(email, pass) {
+  document.querySelector('input[name="email"]').value    = email;
+  document.getElementById('loginPassword').value = pass;
+}
+</script>
+{% endblock %}

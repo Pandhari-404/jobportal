@@ -1,0 +1,298 @@
+{% extends "jobs/base.html" %}
+{% load static %}
+
+{% block title %}Dashboard – JobSpark{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+  {# ── Dashboard Header ──────────────────────────────────── #}
+  <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3 fade-up">
+    <div>
+      <h4 class="fw-bold mb-0">
+        Welcome back, {{ user.first_name|default:user.email }}!
+      </h4>
+      <span class="badge bg-primary mt-1">
+        {% if is_recruiter %}Recruiter Account{% else %}Job Seeker Account{% endif %}
+      </span>
+    </div>
+    {% if is_recruiter %}
+    <a href="{% url 'post_job' %}" class="btn btn-primary">
+      <i class="bi bi-plus-circle me-1"></i>Post New Job
+    </a>
+    {% endif %}
+  </div>
+
+  {# ════════════════════════════════════════════════════════ #}
+  {#   JOB SEEKER DASHBOARD                                   #}
+  {# ════════════════════════════════════════════════════════ #}
+  {% if not is_recruiter %}
+
+    {# Stats Row #}
+    <div class="row g-3 mb-4 fade-up fade-up-delay-1">
+      <div class="col-6 col-md-3">
+        <div class="stat-card">
+          <div class="stat-icon mb-2" style="background:#dbeafe">
+            <i class="bi bi-send-fill text-primary"></i>
+          </div>
+          <div class="stat-number text-primary">{{ my_apps.count }}</div>
+          <p class="text-muted small mb-0">Applications</p>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-card">
+          <div class="stat-icon mb-2" style="background:#fef9c3">
+            <i class="bi bi-bookmark-fill text-warning"></i>
+          </div>
+          <div class="stat-number text-warning">{{ saved_jobs|length }}</div>
+          <p class="text-muted small mb-0">Saved Jobs</p>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-card">
+          <div class="stat-icon mb-2" style="background:#d1fae5">
+            <i class="bi bi-eye-fill text-success"></i>
+          </div>
+          <div class="stat-number text-success">—</div>
+          <p class="text-muted small mb-0">Profile Views</p>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-card">
+          <div class="stat-icon mb-2" style="background:#fce7f3">
+            <i class="bi bi-check-circle-fill" style="color:#e11d48"></i>
+          </div>
+          <div class="stat-number" style="color:#e11d48">—</div>
+          <p class="text-muted small mb-0">Interviews</p>
+        </div>
+      </div>
+    </div>
+
+    {# My Applications Table #}
+    <div class="dash-section mb-4 fade-up fade-up-delay-2">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h6 class="dash-section-title mb-0">
+          <i class="bi bi-send me-2 text-primary"></i>My Applications
+        </h6>
+        <a href="{% url 'home' %}" class="btn btn-sm btn-outline-primary">
+          Browse More Jobs
+        </a>
+      </div>
+      {% if my_apps %}
+      <div class="table-responsive">
+        <table class="table align-middle">
+          <thead>
+            <tr>
+              <th>Job Title</th>
+              <th>Company</th>
+              <th>Status</th>
+              <th>Applied On</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for app in my_apps %}
+            <tr>
+              <td><strong>{{ app.job.title }}</strong></td>
+              <td>{{ app.job.company }}</td>
+              <td>
+                <span class="badge {{ app.get_status_badge_class }}">
+                  {{ app.get_status_display }}
+                </span>
+              </td>
+              <td>{{ app.applied_at|date:"j M Y" }}</td>
+              <td>
+                <a href="{% url 'job_detail' app.job.pk %}"
+                   class="btn btn-sm btn-outline-secondary">
+                  <i class="bi bi-eye"></i>
+                </a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="text-center py-4 text-muted">
+        <i class="bi bi-inbox display-6 mb-2 d-block"></i>
+        No applications yet.
+        <a href="{% url 'home' %}">Browse jobs →</a>
+      </div>
+      {% endif %}
+    </div>
+
+    {# Saved Jobs #}
+    <div class="dash-section fade-up fade-up-delay-3">
+      <h6 class="dash-section-title">
+        <i class="bi bi-bookmark me-2 text-warning"></i>Saved Jobs
+      </h6>
+      {% if saved_jobs %}
+      <div class="row row-cols-1 row-cols-md-2 g-3">
+        {% for job in saved_jobs %}
+        <div class="col">
+          <div class="job-card card h-100 border-0 shadow-sm">
+            <div class="card-body p-4">
+              <div class="d-flex justify-content-between align-items-start mb-3">
+                <div class="company-logo">{{ job.get_logo }}</div>
+                <form method="POST" action="{% url 'toggle_save' job.pk %}">
+                  {% csrf_token %}
+                  <input type="hidden" name="next" value="{% url 'dashboard' %}">
+                  <button type="submit" class="btn btn-sm btn-icon saved" title="Remove">
+                    <i class="bi bi-bookmark-fill"></i>
+                  </button>
+                </form>
+              </div>
+              <h6 class="job-title fw-bold mb-1">{{ job.title }}</h6>
+              <p class="company-name text-muted small mb-2">{{ job.company }}</p>
+              <div class="d-flex flex-wrap gap-2 mb-3">
+                <span class="badge {{ job.get_type_badge_class }}">{{ job.job_type }}</span>
+                <span class="badge badge-location">
+                  <i class="bi bi-geo-alt me-1"></i>{{ job.location }}
+                </span>
+              </div>
+              <p class="salary fw-semibold mb-3">{{ job.salary }}</p>
+              <div class="d-flex gap-2">
+                <a href="{% url 'job_detail' job.pk %}"
+                   class="btn btn-outline-primary btn-sm flex-grow-1">View Details</a>
+                {% if job.pk in applied_ids %}
+                  <button class="btn btn-success btn-sm" disabled>
+                    <i class="bi bi-check2"></i> Applied
+                  </button>
+                {% else %}
+                  <a href="{% url 'job_detail' job.pk %}#apply"
+                     class="btn btn-primary btn-sm">Apply</a>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="text-center py-4 text-muted">
+        <i class="bi bi-bookmark display-6 mb-2 d-block"></i>
+        No saved jobs yet. Click the bookmark icon on any job card.
+      </div>
+      {% endif %}
+    </div>
+
+  {# ════════════════════════════════════════════════════════ #}
+  {#   RECRUITER DASHBOARD                                    #}
+  {# ════════════════════════════════════════════════════════ #}
+  {% else %}
+
+    {# Stats Row #}
+    <div class="row g-3 mb-4 fade-up fade-up-delay-1">
+      <div class="col-6 col-md-3">
+        <div class="stat-card">
+          <div class="stat-icon mb-2" style="background:#dbeafe">
+            <i class="bi bi-briefcase-fill text-primary"></i>
+          </div>
+          <div class="stat-number text-primary">{{ my_jobs.count }}</div>
+          <p class="text-muted small mb-0">Jobs Posted</p>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-card">
+          <div class="stat-icon mb-2" style="background:#d1fae5">
+            <i class="bi bi-people-fill text-success"></i>
+          </div>
+          <div class="stat-number text-success">{{ total_apps }}</div>
+          <p class="text-muted small mb-0">Total Applicants</p>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-card">
+          <div class="stat-icon mb-2" style="background:#fef9c3">
+            <i class="bi bi-eye-fill text-warning"></i>
+          </div>
+          <div class="stat-number text-warning">—</div>
+          <p class="text-muted small mb-0">Job Views</p>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat-card">
+          <div class="stat-icon mb-2" style="background:#fce7f3">
+            <i class="bi bi-check2-circle" style="color:#e11d48"></i>
+          </div>
+          <div class="stat-number" style="color:#e11d48">—</div>
+          <p class="text-muted small mb-0">Hired</p>
+        </div>
+      </div>
+    </div>
+
+    {# My Job Postings Table #}
+    <div class="dash-section fade-up fade-up-delay-2">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h6 class="dash-section-title mb-0">
+          <i class="bi bi-briefcase me-2 text-primary"></i>My Job Postings
+        </h6>
+        <a href="{% url 'post_job' %}" class="btn btn-sm btn-primary">
+          <i class="bi bi-plus me-1"></i>Post New Job
+        </a>
+      </div>
+      {% if my_jobs %}
+      <div class="table-responsive">
+        <table class="table align-middle">
+          <thead>
+            <tr>
+              <th>Job Title</th>
+              <th>Location</th>
+              <th>Applicants</th>
+              <th>Posted On</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for job in my_jobs %}
+            <tr>
+              <td><strong>{{ job.title }}</strong></td>
+              <td>{{ job.location }}</td>
+              <td>
+                <span class="badge bg-primary">
+                  {{ job.applications.count }}
+                </span>
+              </td>
+              <td>{{ job.posted_at|date:"j M Y" }}</td>
+              <td>
+                {# Edit #}
+                <a href="{% url 'edit_job' job.pk %}"
+                   class="btn btn-sm btn-outline-primary me-1"
+                   title="Edit">
+                  <i class="bi bi-pencil"></i>
+                </a>
+                {# Delete #}
+                <form method="POST" action="{% url 'delete_job' job.pk %}"
+                      class="d-inline"
+                      onsubmit="return confirm('Delete this job posting? This cannot be undone.')">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-sm btn-outline-danger me-1"
+                          title="Delete">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </form>
+                {# View Applicants #}
+                <a href="{% url 'view_applicants' job.pk %}"
+                   class="btn btn-sm btn-outline-secondary"
+                   title="View Applicants">
+                  <i class="bi bi-people"></i>
+                </a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="text-center py-4 text-muted">
+        <i class="bi bi-briefcase display-6 mb-2 d-block"></i>
+        No jobs posted yet.
+        <a href="{% url 'post_job' %}">Post your first job →</a>
+      </div>
+      {% endif %}
+    </div>
+
+  {% endif %}{# end recruiter/seeker #}
+
+</div>
+{% endblock %}

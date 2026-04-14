@@ -1,0 +1,136 @@
+{% extends "jobs/base.html" %}
+{% load static %}
+
+{% block title %}Applicants for {{ job.title }} – JobSpark{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+  {# Breadcrumb #}
+  <nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a href="{% url 'dashboard' %}">Dashboard</a>
+      </li>
+      <li class="breadcrumb-item active">Applicants</li>
+    </ol>
+  </nav>
+
+  {# Page Header #}
+  <div class="d-flex flex-wrap align-items-center gap-3 mb-4 fade-up">
+    <div class="company-logo lg">{{ job.get_logo }}</div>
+    <div>
+      <h4 class="fw-bold mb-0">{{ job.title }}</h4>
+      <p class="text-muted mb-0">
+        {{ job.company }} · {{ job.location }}
+        <span class="ms-2 badge bg-primary">
+          {{ applicants.count }} applicant{{ applicants.count|pluralize }}
+        </span>
+      </p>
+    </div>
+    <div class="ms-auto d-flex gap-2">
+      <a href="{% url 'edit_job' job.pk %}"
+         class="btn btn-outline-primary btn-sm">
+        <i class="bi bi-pencil me-1"></i>Edit Job
+      </a>
+      <a href="{% url 'job_detail' job.pk %}"
+         class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-eye me-1"></i>View Listing
+      </a>
+    </div>
+  </div>
+
+  {# Applicants List #}
+  <div class="dash-section fade-up fade-up-delay-1">
+    <h6 class="dash-section-title">
+      <i class="bi bi-people me-2 text-primary"></i>All Applicants
+    </h6>
+
+    {% if applicants %}
+    <div class="list-group list-group-flush">
+      {% for app in applicants %}
+      <div class="list-group-item px-0 py-3 border-bottom">
+        <div class="d-flex align-items-start gap-3">
+          {# Avatar initial #}
+          <div class="avatar-sm flex-shrink-0">
+            {{ app.applicant.first_name|first|upper|default:app.applicant.email|first|upper }}
+          </div>
+          {# Info #}
+          <div class="flex-grow-1 min-width-0">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-1">
+              <div>
+                <strong>
+                  {{ app.applicant.first_name|default:app.applicant.email }}
+                </strong>
+                <span class="text-muted small ms-2">{{ app.applicant.email }}</span>
+              </div>
+              <div class="d-flex align-items-center gap-2">
+                <span class="text-muted small">
+                  {{ app.applied_at|date:"j M Y, g:i A" }}
+                </span>
+                {# Status badge #}
+                <span class="badge {{ app.get_status_badge_class }}">
+                  {{ app.get_status_display }}
+                </span>
+                {# Update status form #}
+                <form method="POST"
+                      action="{% url 'view_applicants' job.pk %}"
+                      class="d-inline">
+                  {% csrf_token %}
+                  <input type="hidden" name="app_id" value="{{ app.pk }}">
+                  <select name="status"
+                          class="form-select form-select-sm"
+                          style="width:auto;font-size:.75rem"
+                          onchange="this.form.submit()">
+                    {% for val, label in app.STATUS_CHOICES %}
+                    <option value="{{ val }}"
+                      {% if app.status == val %}selected{% endif %}>
+                      {{ label }}
+                    </option>
+                    {% endfor %}
+                  </select>
+                </form>
+              </div>
+            </div>
+            {# Cover letter preview #}
+            {% if app.cover_letter %}
+            <blockquote class="text-muted small mb-0 mt-2 ps-3"
+                        style="border-left:3px solid var(--border)">
+              {{ app.cover_letter|truncatewords:40 }}
+              {% if app.cover_letter|length > 200 %}
+              <details class="mt-1">
+                <summary class="text-primary" style="cursor:pointer;font-size:.8rem">
+                  Read more
+                </summary>
+                {{ app.cover_letter }}
+              </details>
+              {% endif %}
+            </blockquote>
+            {% else %}
+            <p class="text-muted small mb-0 mt-1 fst-italic">No cover letter provided.</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    {% else %}
+    <div class="text-center py-5 text-muted">
+      <i class="bi bi-people display-3 mb-3 d-block"></i>
+      <p>No applicants yet for this position.</p>
+      <a href="{% url 'job_detail' job.pk %}" class="btn btn-outline-primary btn-sm">
+        View Job Listing
+      </a>
+    </div>
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Handle status update POST from this same page
+</script>
+{% endblock %}

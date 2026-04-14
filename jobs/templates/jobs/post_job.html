@@ -1,0 +1,145 @@
+{% extends "jobs/base.html" %}
+{% load static %}
+
+{% block title %}{{ heading }} – JobSpark{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+
+      {# Breadcrumb #}
+      <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="{% url 'dashboard' %}">Dashboard</a>
+          </li>
+          <li class="breadcrumb-item active">{{ heading }}</li>
+        </ol>
+      </nav>
+
+      <div class="post-job-card fade-up">
+        {# Card Header #}
+        <div class="d-flex align-items-center gap-3 mb-4">
+          <div class="stat-icon" style="background:#dbeafe;width:48px;height:48px;border-radius:12px">
+            <i class="bi bi-briefcase-fill text-primary"></i>
+          </div>
+          <div>
+            <h4 class="fw-bold mb-0">{{ heading }}</h4>
+            <p class="text-muted small mb-0">
+              Fill in the details below to list your opening.
+            </p>
+          </div>
+        </div>
+
+        <form method="POST"
+              action="{% if is_edit %}{% url 'edit_job' job.pk %}{% else %}{% url 'post_job' %}{% endif %}">
+          {% csrf_token %}
+
+          <div class="row g-3">
+
+            {# Title #}
+            <div class="col-md-6">
+              <label class="form-label" for="{{ form.title.id_for_label }}">
+                Job Title <span class="text-danger">*</span>
+              </label>
+              {{ form.title }}
+              {% if form.title.errors %}
+                <div class="text-danger small mt-1">{{ form.title.errors.0 }}</div>
+              {% endif %}
+            </div>
+
+            {# Company #}
+            <div class="col-md-6">
+              <label class="form-label" for="{{ form.company.id_for_label }}">
+                Company Name <span class="text-danger">*</span>
+              </label>
+              {{ form.company }}
+              {% if form.company.errors %}
+                <div class="text-danger small mt-1">{{ form.company.errors.0 }}</div>
+              {% endif %}
+            </div>
+
+            {# Location #}
+            <div class="col-md-6">
+              <label class="form-label" for="{{ form.location.id_for_label }}">
+                Location <span class="text-danger">*</span>
+              </label>
+              {{ form.location }}
+              {% if form.location.errors %}
+                <div class="text-danger small mt-1">{{ form.location.errors.0 }}</div>
+              {% endif %}
+            </div>
+
+            {# Salary #}
+            <div class="col-md-6">
+              <label class="form-label" for="{{ form.salary.id_for_label }}">
+                Salary Range
+              </label>
+              {{ form.salary }}
+            </div>
+
+            {# Job Type #}
+            <div class="col-md-6">
+              <label class="form-label" for="{{ form.job_type.id_for_label }}">
+                Job Type <span class="text-danger">*</span>
+              </label>
+              {{ form.job_type }}
+              {% if form.job_type.errors %}
+                <div class="text-danger small mt-1">{{ form.job_type.errors.0 }}</div>
+              {% endif %}
+            </div>
+
+            {# Category #}
+            <div class="col-md-6">
+              <label class="form-label" for="{{ form.category.id_for_label }}">
+                Category <span class="text-danger">*</span>
+              </label>
+              {{ form.category }}
+              {% if form.category.errors %}
+                <div class="text-danger small mt-1">{{ form.category.errors.0 }}</div>
+              {% endif %}
+            </div>
+
+            {# Description #}
+            <div class="col-12">
+              <label class="form-label" for="{{ form.description.id_for_label }}">
+                Job Description <span class="text-danger">*</span>
+              </label>
+              {{ form.description }}
+              {% if form.description.errors %}
+                <div class="text-danger small mt-1">{{ form.description.errors.0 }}</div>
+              {% endif %}
+            </div>
+
+            {# Requirements #}
+            <div class="col-12">
+              <label class="form-label" for="{{ form.requirements.id_for_label }}">
+                Requirements
+              </label>
+              {{ form.requirements }}
+              <div class="form-text">Separate each requirement with a new line.</div>
+              {% if form.requirements.errors %}
+                <div class="text-danger small mt-1">{{ form.requirements.errors.0 }}</div>
+              {% endif %}
+            </div>
+
+            {# Buttons #}
+            <div class="col-12 mt-2">
+              <div class="d-flex gap-3">
+                <button type="submit" class="btn btn-primary px-5">
+                  <i class="bi bi-rocket-takeoff me-2"></i>{{ btn_text }}
+                </button>
+                <a href="{% url 'dashboard' %}"
+                   class="btn btn-outline-secondary px-4">Cancel</a>
+              </div>
+            </div>
+
+          </div>{# /row #}
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
