@@ -4,7 +4,7 @@ JobSpark Django Settings
 Standard Django settings with SQLite, static files,
 and the 'jobs' app registered.
 """
-
+import os
 from pathlib import Path
 
 # ── Base Directory ─────────────────────────────────────────────
@@ -35,7 +35,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'whitenoise.storage.CompressedManifestStaticFilesStorage'
+    # 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 ]
 
 ROOT_URLCONF = 'jobspark.urls'
@@ -83,7 +83,9 @@ USE_TZ        = True
 
 # ── Static Files ───────────────────────────────────────────────
 STATIC_URL  = '/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+# STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 
 # ── Media Files ────────────────────────────────────────────────
 MEDIA_URL  = '/media/'
@@ -106,3 +108,8 @@ MESSAGE_TAGS = {
     messages.WARNING: 'warning',
     messages.ERROR:   'danger',
 }
+
+# Manually added!
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static')
+]
