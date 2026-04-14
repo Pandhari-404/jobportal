@@ -12,7 +12,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # ── Security ───────────────────────────────────────────────────
 SECRET_KEY = 'django-insecure-jobspark-dev-key-change-in-production-xyz123'
-DEBUG = True
+DEBUG = False
 ALLOWED_HOSTS = ['*']
 
 # ── Installed Apps ─────────────────────────────────────────────
@@ -29,13 +29,13 @@ INSTALLED_APPS = [
 # ── Middleware ─────────────────────────────────────────────────
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 ]
 
 ROOT_URLCONF = 'jobspark.urls'
@@ -113,3 +113,5 @@ MESSAGE_TAGS = {
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
