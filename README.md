@@ -1,6 +1,6 @@
 
 # jobportal
-=======
+
 # JobSpark – Django Job Portal
 
 A fully functional job portal built with **Django 4+**, **Bootstrap 5**, and **SQLite**.
