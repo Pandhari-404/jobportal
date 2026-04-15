@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # jobportal
 =======
 # JobSpark – Django Job Portal
