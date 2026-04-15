@@ -12,7 +12,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # ── Security ───────────────────────────────────────────────────
 SECRET_KEY = 'django-insecure-jobspark-dev-key-change-in-production-xyz123'
-DEBUG = False
+DEBUG = True
 ALLOWED_HOSTS = [
     'jobspark-ot7t.onrender.com', 
     'localhost', 
