@@ -1,69 +1,125 @@
-# JobSpark
+<div align="center">
 
-A full-stack job portal web application built with **Django**, **Bootstrap 5**, and **SQLite**.
+# ⚡ JobSpark — Full-Stack Django Job Portal
 
-Originally created as a static frontend prototype, JobSpark was rebuilt from the ground up as a complete Django application with authentication, role-based workflows, live search and filtering, applicant tracking, and dark mode support.
+<p align="center">
+  <strong>A modern, responsive recruitment and job-hunting web application built with Python, Django 5, Bootstrap 5, and SQLite.</strong>
+</p>
 
-[![Live Demo](https://img.shields.io/badge/Live_Demo-Render-46E3B7?style=flat-square&logo=render&logoColor=white)](https://jobspark-ot7t.onrender.com/)
-[![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
-[![Django](https://img.shields.io/badge/Django-5.2-092E20?style=flat-square&logo=django&logoColor=white)](https://www.djangoproject.com/)
-[![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3-7952B3?style=flat-square&logo=bootstrap&logoColor=white)](https://getbootstrap.com/)
-[![License](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](LICENSE)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)](https://jobspark-ot7t.onrender.com/)
+[![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![Django](https://img.shields.io/badge/Django-5.2-092E20?style=for-the-badge&logo=django&logoColor=white)](https://www.djangoproject.com/)
+[![Bootstrap](https://img.shields.io/badge/Bootstrap-5.3-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white)](https://getbootstrap.com/)
+[![License](https://img.shields.io/badge/License-MIT-blue.style=for-the-badge)](LICENSE)
+
+<br />
+
+<p align="center">
+  <a href="https://jobspark-ot7t.onrender.com/"><strong>Explore Live Demo »</strong></a>
+  <br />
+  <a href="#-about-jobspark">About</a> •
+  <a href="#-live-demo">Live Demo</a> •
+  <a href="#-key-features">Key Features</a> •
+  <a href="#-tech-stack">Tech Stack</a> •
+  <a href="#-project-structure">Project Structure</a> •
+  <a href="#-local-setup--installation">Local Setup</a> •
+  <a href="#-deployment">Deployment</a>
+</p>
+
+</div>
+
+---
+
+## 📖 About JobSpark
+
+**JobSpark** is a full-featured job board web application engineered to bridge the gap between job seekers and hiring managers. Originally designed as a vanilla static HTML/CSS/JavaScript layout, it has been transformed into a dynamic, production-ready Django application backed by a relational database, custom role-based authentication, and a responsive frontend with dark mode support.
+
+Whether you are a job seeker aiming to discover opportunities and track applications or a recruiter looking to post vacancies and review talent, JobSpark offers a frictionless, intuitive experience.
 
 ---
 
 ## 🌐 Live Demo
 
-👉 **[https://jobspark-ot7t.onrender.com/](https://jobspark-ot7t.onrender.com/)**
+👉 [https://jobspark-ot7t.onrender.com/](https://jobspark-ot7t.onrender.com/)
 
-> **Note:** Hosted on Render's free tier. If the instance has been sleeping, the first request may take ~30–50 seconds to boot up.
-
----
-
-## Overview
-
-JobSpark provides two distinct experiences depending on the user's role:
-
-* **Job Seekers** can search listings, filter by job type and category, submit applications with a cover letter, save jobs for later, and track their application review status in real time.
-* **Recruiters** have access to a dedicated management dashboard where they can create new job postings, edit or remove listings, and review candidate applications.
-
-The frontend is fully responsive across mobile, tablet, and desktop screens, and includes a dark/light mode toggle that persists across page refreshes via `localStorage`.
+> 🚀 **Try it out live:** Experience real-time job searching, application tracking, dark mode toggle, and recruiter job posting on the live deployment. *(Note: Render free tier services may take a few seconds to spin up on initial load).*
 
 ---
 
-## Features
+## 🚀 Key Features
 
-### For Job Seekers
-* **Search & Filters:** Search by title or company keywords, filter by location, job type (*Full-time, Part-time, Contract, Internship*), and department category (*Engineering, Design, Data, Sales, Marketing, Management*).
-* **Job Detail View:** Detailed job descriptions, bulleted requirements, salary ranges, and company badges.
-* **Application System:** One-click application with an optional custom cover letter (prevents duplicate applications per job).
-* **Saved Jobs:** Bookmark jobs with instant visual feedback to review later.
-* **Seeker Dashboard:** Track all submitted applications with live status badges (`Under Review`, `Reviewed`, `Accepted`, `Rejected`).
+### 🔍 For Job Seekers
+* **Smart Search & Filters:** Search jobs by keywords (title/company), location, employment type (Full-time, Part-time, Contract, Internship), and industry category (Engineering, Design, Data, Management, Marketing, Sales).
+* **Detailed Job Overviews:** View complete job descriptions, requirements lists, company logos/badges, and salary ranges.
+* **Streamlined Applications:** Apply directly to jobs with a tailored cover letter in one click.
+* **Applicant Dashboard:** Monitor the live review status of every application (`Under Review`, `Reviewed`, `Accepted`, `Rejected`).
+* **Saved Jobs / Bookmarks:** Save listings to revisit later with instant UI state toggling.
 
-### For Recruiters
-* **Role-Based Access:** Recruiters are assigned elevated permissions (`is_staff = True`) upon registration.
-* **Listing Management:** Full CRUD operations — post new vacancies, update descriptions/requirements, and delete inactive listings.
-* **Applicant Review:** View all submissions per job posting, inspect candidate names, timestamps, and cover letters.
+### 💼 For Recruiters & Employers
+* **Role-Based Access Control (RBAC):** Dedicated recruiter accounts empowered with posting and candidate management capabilities.
+* **Recruiter Dashboard:** Comprehensive overview of posted jobs, applicant counters, and candidate submissions.
+* **Listing Management:** Full CRUD capability — create new job postings, edit existing vacancies, or archive/delete listings.
+* **Applicant Review Portal:** View applicant profiles, inspect submitted cover letters, and track hiring decisions per job.
 
-### Platform & UI/UX
-* **Dark / Light Theme:** Persistent theme toggle stored in the browser's `localStorage`.
-* **Toast Feedback:** Native Django messages (`messages.success`, `messages.error`, etc.) are mapped to Bootstrap 5 toasts via a custom JavaScript bridge.
-* **Secure Authentication:** Standard session-based authentication (login, registration, logout) with CSRF protection and Django password hashing.
-* **Django Admin:** Preconfigured admin interface for managing users, listings, and applications.
-
----
-
-## Tech Stack
-
-* **Backend:** Python 3.10+, Django 5.2
-* **Frontend:** HTML5, CSS3, JavaScript (ES6), Bootstrap 5.3, Bootstrap Icons
-* **Database:** SQLite (default for development; easily swappable with PostgreSQL)
-* **WSGI Server:** Gunicorn
-* **Static Assets:** WhiteNoise (configured for compressed caching in production)
-* **Deployment:** Render
+### 🎨 UI, UX & System Highlights
+* **🌙 Dark / Light Mode Toggle:** Seamless theme switching with state persistence stored via `localStorage`.
+* **🔔 Dynamic Toast Notifications:** Native Django messages (`messages.success`, `messages.info`, `messages.warning`, `messages.error`) bridge directly into animated Bootstrap 5 toasts.
+* **📱 Fully Responsive Design:** Clean layout optimized for mobile screens, tablets, and desktops.
+* **🔐 Robust Security:** Form validation, CSRF protection, secure password hashing, and login-restricted endpoints.
+* **🛠️ Django Admin Suite:** Powerful built-in admin dashboard for complete management of users, jobs, applications, and bookmarks.
 
 ---
 
-## Data Models
+## 🛠️ Tech Stack
 
-The project is structured around three core relational models in `jobs/models.py`:
+| Layer | Technologies |
+|---|---|
+| **Backend Framework** | [Python 3](https://www.python.org/) & [Django 5](https://www.djangoproject.com/) |
+| **Frontend UI** | HTML5, CSS3, JavaScript (ES6+), [Bootstrap 5](https://getbootstrap.com/), Bootstrap Icons |
+| **Database** | SQLite3 (development & default; fully swappable with PostgreSQL / MySQL) |
+| **WSGI / Web Server** | [Gunicorn](https://gunicorn.org/) |
+| **Static Asset Serving** | [WhiteNoise](http://whitenoise.evans.io/) (compressed manifest caching) |
+| **Hosting & Cloud** | [Render](https://render.com/) |
+
+---
+
+## 📂 Project Structure
+
+```text
+jobspark/
+│
+├── build.sh                  # Deployment build script (migrations & collectstatic)
+├── db.sqlite3                # SQLite database (local development)
+├── manage.py                 # Django command-line runner
+├── requirements.txt          # Python package dependencies
+│
+├── jobspark/                 # Core Project Configuration
+│   ├── __init__.py
+│   ├── asgi.py
+│   ├── settings.py           # Installed apps, middleware, database & WhiteNoise config
+│   ├── urls.py               # Root URL dispatcher
+│   └── wsgi.py               # WSGI entrypoint for Gunicorn
+│
+└── jobs/                     # Main Application
+    ├── admin.py              # Model registrations for Django Admin
+    ├── apps.py               # App configuration
+    ├── forms.py              # Search, Job Creation, Application & Registration forms
+    ├── models.py             # Job, Application, and SavedJob database models
+    ├── urls.py               # Application-level routing endpoints
+    ├── views.py              # View controllers (search, auth, dashboards, CRUD)
+    │
+    ├── static/               # Static assets
+    │   ├── bot-logo.png
+    │   └── jobs/
+    │       ├── css/style.css # Custom themes, dark mode variables & styling
+    │       └── js/app.js     # Dark mode handler, toasts & interactive UI logic
+    │
+    └── templates/jobs/       # Modular Django HTML Templates
+        ├── base.html         # Base skeleton (navbar, toast bridge, footer)
+        ├── home.html         # Job search, filters & card listings
+        ├── job_detail.html   # Job specification & application modal/form
+        ├── dashboard.html    # Unified seeker / recruiter dashboard
+        ├── applicants.html   # Recruiter applicant review list
+        ├── post_job.html     # Create and edit job form
+        ├── login.html        # Authentication login page
+        └── register.html     # Registration with Seeker/Recruiter role selection
